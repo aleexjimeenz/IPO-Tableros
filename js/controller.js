@@ -57,35 +57,41 @@ export class TableroController {
       this.reiniciarJuego();
     });
 
-    // API Drag & Drop
+    // Gestión completa del ciclo de eventos Drag & Drop API[cite: 12, 13]
     const tablero = this.view.tableroElement;
 
+    // Evento dragstart: establece información a transferir con dataTransfer[cite: 12, 15, 16]
     tablero.addEventListener('dragstart', (e) => {
-      const ficha = e.target.closest('.ficha');
+      const ficha = e.target.closest('canvas.ficha');
       if (!ficha) return;
+
       this.origenIndex = parseInt(ficha.dataset.index, 10);
-      e.dataTransfer.setData('text/plain', this.origenIndex);
+      e.dataTransfer.setData('text/plain', this.origenIndex.toString()); // Transferencia MIME text/plain[cite: 16]
       e.dataTransfer.effectAllowed = 'move';
       this.view.marcarArrastreInicio(ficha);
     });
 
+    // Evento dragend: cancelación o fin del arrastre[cite: 12, 13]
     tablero.addEventListener('dragend', (e) => {
-      const ficha = e.target.closest('.ficha');
+      const ficha = e.target.closest('canvas.ficha');
       this.view.desmarcarArrastreFin(ficha);
       this.origenIndex = null;
     });
 
+    // Evento dragover: preventDefault() OBLIGATORIO para permitir el soltado (drop)[cite: 13, 14, 15]
     tablero.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     });
 
+    // Evento dragenter: entrada en zona destino[cite: 12, 13, 14]
     tablero.addEventListener('dragenter', (e) => {
       e.preventDefault();
       const celda = e.target.closest('.celda');
       if (celda) this.view.marcarCeldaSobre(celda);
     });
 
+    // Evento dragleave: salida de zona destino[cite: 12, 13, 14]
     tablero.addEventListener('dragleave', (e) => {
       const celda = e.target.closest('.celda');
       if (celda && !celda.contains(e.relatedTarget)) {
@@ -93,20 +99,26 @@ export class TableroController {
       }
     });
 
+    // Evento drop: recibe la información y evita redirección por defecto del navegador[cite: 12, 13, 14, 16]
     tablero.addEventListener('drop', (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Previene comportamientos automáticos del navegador[cite: 13, 14, 16]
       const celda = e.target.closest('.celda');
       if (!celda) return;
 
       this.view.desmarcarCeldaSobre(celda);
       const destinoIndex = parseInt(celda.dataset.index, 10);
 
-      if (this.origenIndex !== null && this.origenIndex !== destinoIndex) {
-        const exito = this.model.intercambiarFichas(this.origenIndex, destinoIndex);
+      // Recuperación mediante dataTransfer[cite: 16]
+      const origenTransferido = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const idxOrigen = isNaN(origenTransferido) ? this.origenIndex : origenTransferido;
+
+      if (idxOrigen !== null && idxOrigen !== destinoIndex) {
+        const exito = this.model.intercambiarFichas(idxOrigen, destinoIndex);
         if (exito) {
           this.actualizarVista();
           if (this.model.comprobarVictoria()) {
-            setTimeout(() => this.view.mostrarVictoria(), 150);
+            this.view.iniciarAnimacionVictoria(this.model.temaAspecto);
+            setTimeout(() => this.view.mostrarVictoria(), 250);
           }
         }
       }

@@ -1,9 +1,9 @@
 export class TableroModel {
   constructor() {
-    this.dimension = 4; // Por defecto 4x4
+    this.dimension = 4;
     this.tamanoFicha = 'mediana';
     this.temaAspecto = 'clasico';
-    this.numTipos = 3;
+    this.numTipos = 5;
     this.grid = [];
   }
 
@@ -11,7 +11,6 @@ export class TableroModel {
     this.grid = [];
     const filasTipos = [];
 
-    // Asignación de tipos por filas para garantizar que el juego tenga solución
     for (let r = 0; r < this.dimension; r++) {
       filasTipos.push(r % this.numTipos);
     }
@@ -23,7 +22,6 @@ export class TableroModel {
       }
     }
 
-    // Mezclar el tablero de forma aleatoria (Fisher-Yates)
     this.mezclarTablero();
     if (this.comprobarVictoria()) {
       this.mezclarTablero();

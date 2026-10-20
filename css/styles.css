@@ -10,11 +10,6 @@
   --color-header-text: hsl(var(--hue-primary), 15%, 98%);
   --color-accent: hsl(var(--hue-accent), 70%, 40%);
 
-  /* Fichas - Paleta Clásica (3 tipos) */
-  --color-tipo-0: hsl(12, 85%, 58%); /* Rojo / Círculo */
-  --color-tipo-1: hsl(205, 85%, 52%); /* Azul / Cuadrado */
-  --color-tipo-2: hsl(145, 75%, 42%); /* Verde / Triángulo */
-
   --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-title: 'Georgia', serif;
   --radius-sm: 0.375rem;
@@ -24,30 +19,13 @@
   --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
-/* Temas Cromáticos */
-#tablero[data-tema="neon"] {
-  --color-tipo-0: hsl(320, 100%, 55%); /* Rosa Neón */
-  --color-tipo-1: hsl(180, 100%, 45%); /* Cían Neón */
-  --color-tipo-2: hsl(60, 100%, 50%); /* Amarillo Neón */
-}
-
-#tablero[data-tema="pastel"] {
-  --color-tipo-0: hsl(350, 70%, 75%); /* Rosa Pastel */
-  --color-tipo-1: hsl(210, 70%, 75%); /* Azul Pastel */
-  --color-tipo-2: hsl(150, 60%, 72%); /* Verde Menta Pastel */
-}
-
-/* RESET Y ESTRUCTURA GENERAL (LAYOUT EN 100VH SIN SCROLL) */
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html,
-body {
+html, body {
   width: 100%;
   height: 100vh;
   max-height: 100vh;
@@ -216,7 +194,6 @@ body {
   justify-content: center;
 }
 
-/* CSS GRID DEL TABLERO */
 .tablero-grid {
   display: grid;
   gap: 0.5rem;
@@ -242,61 +219,37 @@ body {
   border-style: solid;
 }
 
-/* FICHAS DRAGGABLE */
-.ficha {
+/* Ficha Canvas */
+canvas.ficha {
   cursor: grab;
   user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.ficha:active {
+canvas.ficha:active {
   cursor: grabbing;
 }
 
-.ficha.dragging {
+canvas.ficha.dragging {
   opacity: 0.4;
   transform: scale(0.9);
 }
 
-/* Tamaños de Fichas */
-#tablero[data-tamano="pequena"] .ficha {
+#tablero[data-tamano="pequena"] canvas.ficha {
   width: 55%;
   height: 55%;
 }
 
-#tablero[data-tamano="mediana"] .ficha {
+#tablero[data-tamano="mediana"] canvas.ficha {
   width: 75%;
   height: 75%;
 }
 
-#tablero[data-tamano="grande"] .ficha {
+#tablero[data-tamano="grande"] canvas.ficha {
   width: 90%;
   height: 90%;
 }
 
-/* Formas y Colores según Tipo */
-.ficha[data-tipo="0"] {
-  background-color: var(--color-tipo-0);
-  border-radius: 50%; /* Círculo */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.ficha[data-tipo="1"] {
-  background-color: var(--color-tipo-1);
-  border-radius: var(--radius-sm); /* Cuadrado */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.ficha[data-tipo="2"] {
-  background-color: var(--color-tipo-2);
-  clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Triángulo */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* CAPAS / MODALES CON POSICIONAMIENTO FIX */
 .modal-overlay {
   position: fixed;
   top: 0;
